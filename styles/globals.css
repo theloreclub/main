@@ -1,0 +1,31 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root{
+  --lapis-blue: #1A3FCF;
+  --royal-blue: #1E56E0;
+  --indigo-blue: #4338CA;
+  --ice-blue: #E7F0FF;
+  --pale-blue: #F2F6FF;
+  --dark: #1a1a2e;
+  --white: #FFFFFF;
+  --muted: #6B7280;
+}
+
+html,body,#root{
+  height:100%;
+}
+
+body{
+  @apply bg-pale-blue text-dark font-sans;
+}
+
+/* small utility for lowercase brand voice */
+.lowercase-voice{ text-transform:lowercase }
+
+/* simple card */
+.card{ @apply bg-white rounded-md shadow p-4 }
+
+/* dark-mode helpers for dashboard */
+.dark-body{ background-color:var(--dark); color:var(--white) }

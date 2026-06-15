@@ -1,9 +1,12 @@
 'use client'
-import React, { useState } from 'react'
+import React, { useEffect, useState } from 'react'
+import { supabase } from '../../../../lib/supabase'
+import type { Session } from '@supabase/supabase-js'
 import UploadZone from '../../../../components/seller/UploadZone'
 import PriceBuilder from '../../../../components/seller/PriceBuilder'
 
 export default function NewListingPage(){
+  const [session, setSession] = useState<Session | null>(null)
   const [title, setTitle] = useState('')
   const [category, setCategory] = useState('bachelorette')
   const [destination, setDestination] = useState('')
@@ -14,8 +17,19 @@ export default function NewListingPage(){
   const [submitting, setSubmitting] = useState(false)
   const [message, setMessage] = useState<string | null>(null)
 
+  useEffect(() => {
+    supabase.auth.getSession().then(({ data }) => {
+      setSession(data.session)
+    })
+  }, [])
+
   async function handleSubmit(e: React.FormEvent){
     e.preventDefault()
+    if(!session) {
+      setMessage('please sign in before listing a plan')
+      return
+    }
+
     setSubmitting(true)
     setMessage(null)
     const payload = {
@@ -42,6 +56,7 @@ export default function NewListingPage(){
   return (
     <section className="max-w-3xl mx-auto py-12">
       <h1 className="text-2xl font-display lowercase-voice">turn your last trip into a listing</h1>
+      {!session && <div className="mt-4 p-4 bg-ice-blue rounded text-sm text-dark">you need to sign in to create a listing.</div>}
       <form className="mt-6 flex flex-col gap-6" onSubmit={handleSubmit}>
         <div>
           <label className="block text-sm text-muted">title</label>

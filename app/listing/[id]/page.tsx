@@ -20,7 +20,7 @@ export default async function ListingPage({ params }: Props){
           <div className="mt-4 text-muted">{listing.description}</div>
         </div>
         <aside className="lg:col-span-1 card">
-          <div className="text-sm text-muted">base itinerary</div>
+          <div className="text-sm text-muted">base plan</div>
           <div className="text-2xl font-display mt-2">${listing.base_price}</div>
           <button className="mt-4 px-4 py-2 rounded bg-lapis-blue text-white w-full">add to cart</button>
         </aside>

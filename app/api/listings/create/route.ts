@@ -1,18 +1,36 @@
 import { NextResponse } from 'next/server'
-import supabaseServer from '../../../../lib/supabaseServer'
+import { cookies } from 'next/headers'
+import { createServerClient } from '@supabase/auth-helpers-nextjs'
+import getSupabaseServer from '../../../../lib/supabaseServer'
 import { ListingCreateBody } from '../../../../lib/types'
 
 export async function POST(req: Request){
   try{
+    const supabaseAuth = createServerClient(
+      process.env.NEXT_PUBLIC_SUPABASE_URL!,
+      process.env.SUPABASE_SERVICE_ROLE_KEY || process.env.SUPABASE_SERVICE_ROLE!,
+      {
+        cookies: {
+          getAll: () => cookies().getAll().map(cookie => ({ name: cookie.name, value: cookie.value })),
+          setAll: () => undefined
+        }
+      }
+    )
+    const {
+      data: { session }
+    } = await supabaseAuth.auth.getSession()
+
+    if(!session?.user) {
+      return NextResponse.json({ error: 'unauthorized' }, { status: 401 })
+    }
+
     const body = await req.json() as ListingCreateBody
     if(!body.title || !body.category || !body.base_price) {
       return NextResponse.json({ error: 'missing fields' }, { status: 400 })
     }
 
-    // For now assume seller is authenticated and seller_id supplied in body
-    // In production use server auth to get user id from cookie/session
-    const seller_id = (body as any).seller_id || null
-
+    const seller_id = session.user.id
+    const supabaseServer = getSupabaseServer()
     const { data, error } = await supabaseServer.from('listings').insert({
       seller_id,
       title: body.title,

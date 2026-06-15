@@ -1,8 +1,9 @@
 import { NextResponse } from 'next/server'
 import getStripe from '../../../../lib/stripe'
-import supabaseServer from '../../../../lib/supabaseServer'
+import getSupabaseServer from '../../../../lib/supabaseServer'
 
 export async function POST(req: Request){
+    const supabaseServer = getSupabaseServer()
   const stripe = getStripe()
   const payload = await req.text()
   const sig = (req.headers.get('stripe-signature') || '')

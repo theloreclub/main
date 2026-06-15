@@ -1,8 +1,9 @@
 import { NextResponse } from 'next/server'
-import supabaseServer from '../../../lib/supabaseServer'
+import getSupabaseServer from '../../../lib/supabaseServer'
 
 export async function POST(req: Request){
   try{
+    const supabaseServer = getSupabaseServer()
     const { order_id, sender_id, body } = await req.json()
     if(!order_id || !sender_id || !body) return NextResponse.json({ error: 'missing' }, { status: 400 })
 

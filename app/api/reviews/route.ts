@@ -1,8 +1,9 @@
 import { NextResponse } from 'next/server'
-import supabaseServer from '../../../lib/supabaseServer'
+import getSupabaseServer from '../../../lib/supabaseServer'
 
 export async function POST(req: Request){
   try{
+    const supabaseServer = getSupabaseServer()
     const { listing_id, order_id, reviewer_id, rating, body } = await req.json()
     if(!listing_id || !order_id || !reviewer_id || !rating) return NextResponse.json({ error: 'missing' }, { status: 400 })
 
@@ -16,6 +17,7 @@ export async function POST(req: Request){
 
 export async function GET(req: Request){
   try{
+    const supabaseServer = getSupabaseServer()
     const url = new URL(req.url)
     const listing_id = url.searchParams.get('listing_id')
     if(!listing_id) return NextResponse.json({ error: 'missing listing_id' }, { status: 400 })

@@ -1,8 +1,9 @@
 import { NextResponse } from 'next/server'
-import supabaseServer from '../../../../lib/supabaseServer'
+import getSupabaseServer from '../../../../lib/supabaseServer'
 
 export async function GET(req: Request, { params }: { params: { handle: string } }){
   try{
+    const supabaseServer = getSupabaseServer()
     const handle = params.handle
     const { data: user, error: userErr } = await supabaseServer.from('users').select('*').eq('handle', handle).single()
     if(userErr) return NextResponse.json({ error: userErr.message }, { status: 404 })

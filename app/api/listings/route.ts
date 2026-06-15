@@ -1,8 +1,9 @@
 import { NextResponse } from 'next/server'
-import supabaseServer from '../../../lib/supabaseServer'
+import getSupabaseServer from '../../../lib/supabaseServer'
 
 export async function GET(req: Request){
   try{
+    const supabaseServer = getSupabaseServer()
     const url = new URL(req.url)
     const params = url.searchParams
     const category = params.get('category')

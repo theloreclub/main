@@ -1,10 +1,7 @@
 import React from 'react'
 
-type Props = { searchParams?: { seller_id?: string } }
-
-export default async function AnalyticsPage({ searchParams }: Props){
-  const seller_id = searchParams?.seller_id || ''
-  const res = await fetch(`${process.env.NEXT_PUBLIC_BASE_URL || ''}/api/seller/analytics?seller_id=${seller_id}`)
+export default async function AnalyticsPage(){
+  const res = await fetch(`${process.env.NEXT_PUBLIC_BASE_URL || ''}/api/seller/analytics`, { cache: 'no-store' })
   const json = await res.json()
   if(json.error) return <div className="p-8">{json.error}</div>
 

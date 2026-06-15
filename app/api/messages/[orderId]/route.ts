@@ -1,8 +1,9 @@
 import { NextResponse } from 'next/server'
-import supabaseServer from '../../../../lib/supabaseServer'
+import getSupabaseServer from '../../../../lib/supabaseServer'
 
 export async function GET(req: Request, { params }: { params: { orderId: string } }){
   try{
+    const supabaseServer = getSupabaseServer()
     const orderId = params.orderId
     const { data, error } = await supabaseServer.from('messages').select('*').eq('order_id', orderId).order('created_at', { ascending: true })
     if(error) return NextResponse.json({ error: error.message }, { status: 500 })

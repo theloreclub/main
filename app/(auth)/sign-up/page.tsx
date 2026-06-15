@@ -1,7 +1,7 @@
 'use client'
-import React, { useState } from 'react'
+import React, { useState, useEffect } from 'react'
 import { useRouter } from 'next/navigation'
-import { signUpWithEmail } from '../../../lib/auth'
+import { useSupabase } from '../../providers'
 import Button from '../../../components/ui/Button'
 import LoreLogo from '../../../components/ui/LoreLogo'
 
@@ -11,15 +11,20 @@ export default function SignUpPage(){
   const [loading, setLoading] = useState(false)
   const [error, setError] = useState<string | null>(null)
   const router = useRouter()
+  const { supabase, session } = useSupabase()
+
+  useEffect(() => {
+    if(session) router.push('/')
+  }, [session, router])
 
   async function handleSubmit(e: React.FormEvent){
     e.preventDefault()
     setLoading(true)
     setError(null)
-    const res = await signUpWithEmail(email, password)
+    const { error } = await supabase.auth.signUp({ email, password })
     setLoading(false)
-    if(res.error){
-      setError(res.error.message)
+    if(error){
+      setError(error.message)
       return
     }
     router.push('/')
@@ -37,6 +42,7 @@ export default function SignUpPage(){
         {error && <div className="text-sm text-red-500">{error}</div>}
         <Button type="submit" className="w-full">{loading ? 'creating account…' : 'create account'}</Button>
       </form>
+      <p className="mt-4 text-sm text-muted">already have an account? <a href="/sign-in" className="text-lapis-blue">sign in</a></p>
     </section>
   )
 }
